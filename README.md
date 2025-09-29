@@ -22,7 +22,7 @@ Incluye opciones de personalización, copia rápida al portapapeles, medidor de 
 ## 🚀 Demo
 
 Puedes abrir el archivo `index.html` directamente en tu navegador para probar la aplicación.
-*(Si lo publicas con GitHub Pages, agrega aquí el enlace de la demo: `https://tuusuario.github.io/tu-repo/`)*
+*(Si lo publicas con GitHub Pages, agrega aquí el enlace de la demo: `https://floree1.github.io/PasswordGenerator/`)*
 
 ## 📂 Estructura del proyecto
 

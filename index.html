@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Contraseñas Seguras</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3a0ca3;
+            --accent-color: #4cc9f0;
+            --text-color: #333333;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --border-color: #e0e0e0;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        .dark-mode {
+            --primary-color: #7209b7;
+            --secondary-color: #560bad;
+            --accent-color: #b5179e;
+            --text-color: #f5f5f5;
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --border-color: #333333;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: var(--transition);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            margin-bottom: 30px;
+            opacity: 0.8;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+
+        .password-display-container {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .password-display {
+            background-color: var(--bg-color);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            font-size: 1.5rem;
+            text-align: center;
+            word-break: break-all;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Courier New', monospace;
+            position: relative;
+            padding-right: 60px;
+        }
+
+        .copy-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .copy-btn:hover {
+            background: var(--secondary-color);
+        }
+
+        .options {
+            margin-bottom: 25px;
+        }
+
+        .option-group {
+            margin-bottom: 20px;
+        }
+
+        .option-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .option-title i {
+            color: var(--primary-color);
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .slider-value {
+            font-weight: bold;
+            color: var(--primary-color);
+            min-width: 40px;
+            text-align: center;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            -webkit-appearance: none;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--border-color);
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .checkbox-group:hover {
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+
+        .dark-mode .checkbox-group:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .checkbox-group input {
+            margin-right: 15px;
+            transform: scale(1.2);
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .checkbox-group i {
+            color: var(--primary-color);
+            width: 20px;
+            text-align: center;
+        }
+
+        .strength-container {
+            margin-top: 20px;
+        }
+
+        .strength-meter {
+            height: 12px;
+            border-radius: 6px;
+            margin-top: 10px;
+            background-color: var(--border-color);
+            overflow: hidden;
+        }
+
+        .strength-fill {
+            height: 100%;
+            border-radius: 6px;
+            width: 0%;
+            transition: width 0.5s, background-color 0.5s;
+        }
+
+        .strength-text {
+            margin-top: 8px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 15px 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+
+        .theme-toggle {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--text-color);
+            box-shadow: var(--shadow);
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(30deg);
+        }
+
+        .copy-notification {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background-color: var(--success-color);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: var(--transition);
+        }
+
+        .copy-notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .password-display {
+                font-size: 1.2rem;
+                padding: 15px;
+                padding-right: 50px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <div class="container">
+        <header>
+            <div></div> <!-- Espacio vacío para equilibrar el diseño -->
+            <h1>Generador de Contraseñas</h1>
+            <div class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </div>
+        </header>
+        
+        <p class="subtitle">Crea contraseñas seguras y únicas en segundos</p>
+        
+        <div class="card">
+            <div class="password-display-container">
+                <div class="password-display" id="passwordDisplay">
+                    Tu contraseña aparecerá aquí
+                </div>
+                <button class="copy-btn" id="copyBtn">
+                    <i class="fas fa-copy"></i> Copiar
+                </button>
+            </div>
+            
+            <div class="options">
+                <div class="option-group">
+                    <div class="option-title">
+                        <i class="fas fa-ruler-horizontal"></i>
+                        <span>Longitud de la contraseña</span>
+                    </div>
+                    <div class="slider-container">
+                        <span class="slider-value" id="lengthValue">12</span>
+                        <input type="range" id="length" min="8" max="40" value="12" class="slider">
+                        <span>40</span>
+                    </div>
+                </div>
+                
+                <div class="option-group">
+                    <div class="option-title">
+                        <i class="fas fa-toggle-on"></i>
+                        <span>Opciones de caracteres</span>
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="uppercase" checked>
+                        <label for="uppercase">
+                            <i class="fas fa-font"></i>
+                            <span>Letras mayúsculas (A-Z)</span>
+                        </label>
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="lowercase" checked>
+                        <label for="lowercase">
+                            <i class="fas fa-font"></i>
+                            <span>Letras minúsculas (a-z)</span>
+                        </label>
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="numbers" checked>
+                        <label for="numbers">
+                            <i class="fas fa-hashtag"></i>
+                            <span>Números (0-9)</span>
+                        </label>
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="symbols" checked>
+                        <label for="symbols">
+                            <i class="fas fa-asterisk"></i>
+                            <span>Símbolos y caracteres especiales</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="option-group">
+                    <div class="option-title">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Seguridad de la contraseña</span>
+                    </div>
+                    <div class="strength-container">
+                        <div class="strength-meter">
+                            <div class="strength-fill" id="strengthFill"></div>
+                        </div>
+                        <div class="strength-text" id="strengthText">Selecciona opciones para ver la seguridad</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button class="btn" id="generateBtn">
+                    <i class="fas fa-key"></i> Generar Contraseña
+                </button>
+                <button class="btn btn-secondary" id="regenerateBtn">
+                    <i class="fas fa-sync-alt"></i> Regenerar
+                </button>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="option-title">
+                <i class="fas fa-lightbulb"></i>
+                <span>Consejos de seguridad</span>
+            </div>
+            <ul style="padding-left: 20px; margin-top: 15px;">
+                <li style="margin-bottom: 10px;">Usa contraseñas de al menos 12 caracteres</li>
+                <li style="margin-bottom: 10px;">Combina letras, números y símbolos</li>
+                <li style="margin-bottom: 10px;">No reutilices contraseñas en diferentes servicios</li>
+                <li>Considera usar un gestor de contraseñas</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="copy-notification" id="copyNotification">
+        <i class="fas fa-check-circle"></i>
+        <span>¡Contraseña copiada al portapapeles!</span>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elementos DOM
+            const passwordDisplay = document.getElementById('passwordDisplay');
+            const generateBtn = document.getElementById('generateBtn');
+            const regenerateBtn = document.getElementById('regenerateBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const lengthSlider = document.getElementById('length');
+            const lengthValue = document.getElementById('lengthValue');
+            const uppercaseCheckbox = document.getElementById('uppercase');
+            const lowercaseCheckbox = document.getElementById('lowercase');
+            const numbersCheckbox = document.getElementById('numbers');
+            const symbolsCheckbox = document.getElementById('symbols');
+            const strengthFill = document.getElementById('strengthFill');
+            const strengthText = document.getElementById('strengthText');
+            const copyNotification = document.getElementById('copyNotification');
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = themeToggle.querySelector('i');
+            
+            // Conjuntos de caracteres
+            const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz';
+            const numberChars = '0123456789';
+            const symbolChars = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+            
+            // Variable para almacenar la contraseña actual
+            let currentPassword = '';
+            
+            // Verificar y aplicar tema guardado
+            const savedTheme = localStorage.getItem('theme') || 'light-mode';
+            document.body.className = savedTheme;
+            updateThemeIcon(savedTheme);
+            
+            // Actualizar valor del slider
+            lengthSlider.addEventListener('input', function() {
+                lengthValue.textContent = this.value;
+                generatePassword();
+            });
+            
+            // Generar contraseña al cambiar opciones
+            [uppercaseCheckbox, lowercaseCheckbox, numbersCheckbox, symbolsCheckbox].forEach(checkbox => {
+                checkbox.addEventListener('change', generatePassword);
+            });
+            
+            // Generar contraseña inicial
+            generatePassword();
+            
+            // Botón generar
+            generateBtn.addEventListener('click', generatePassword);
+            
+            // Botón regenerar
+            regenerateBtn.addEventListener('click', generatePassword);
+            
+            // Botón copiar
+            copyBtn.addEventListener('click', function() {
+                if (!currentPassword) {
+                    showNotification('Primero genera una contraseña', 'warning');
+                    return;
+                }
+                
+                // Crear un elemento de texto temporal
+                const textArea = document.createElement('textarea');
+                textArea.value = currentPassword;
+                document.body.appendChild(textArea);
+                textArea.select();
+                
+                try {
+                    // Intentar copiar usando el API moderno
+                    const successful = document.execCommand('copy');
+                    if (successful) {
+                        showNotification('¡Contraseña copiada al portapapeles!', 'success');
+                    } else {
+                        // Fallback para navegadores modernos
+                        navigator.clipboard.writeText(currentPassword).then(function() {
+                            showNotification('¡Contraseña copiada al portapapeles!', 'success');
+                        }).catch(function(err) {
+                            console.error('Error al copiar: ', err);
+                            showNotification('No se pudo copiar la contraseña', 'error');
+                        });
+                    }
+                } catch (err) {
+                    console.error('Error al copiar: ', err);
+                    showNotification('No se pudo copiar la contraseña', 'error');
+                }
+                
+                // Limpiar
+                document.body.removeChild(textArea);
+            });
+            
+            // Toggle del tema
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.body.className;
+                const newTheme = currentTheme === 'light-mode' ? 'dark-mode' : 'light-mode';
+                
+                document.body.className = newTheme;
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+            
+            function generatePassword() {
+                let characterSet = '';
+                
+                // Construir conjunto de caracteres según opciones seleccionadas
+                if (uppercaseCheckbox.checked) characterSet += uppercaseChars;
+                if (lowercaseCheckbox.checked) characterSet += lowercaseChars;
+                if (numbersCheckbox.checked) characterSet += numberChars;
+                if (symbolsCheckbox.checked) characterSet += symbolChars;
+                
+                // Verificar que al menos un tipo de carácter esté seleccionado
+                if (characterSet === '') {
+                    passwordDisplay.textContent = 'Selecciona al menos un tipo de carácter';
+                    currentPassword = '';
+                    updateStrengthMeter(0);
+                    return;
+                }
+                
+                // Generar contraseña aleatoria
+                const length = parseInt(lengthSlider.value);
+                let password = '';
+                for (let i = 0; i < length; i++) {
+                    const randomIndex = Math.floor(Math.random() * characterSet.length);
+                    password += characterSet[randomIndex];
+                }
+                
+                passwordDisplay.textContent = password;
+                currentPassword = password;
+                updateStrengthMeter(calculatePasswordStrength(password, length));
+            }
+            
+            function calculatePasswordStrength(password, length) {
+                // Calcular fortaleza basada en longitud y variedad de caracteres
+                let strength = 0;
+                
+                // Base por longitud
+                strength += Math.min(length / 40 * 50, 50);
+                
+                // Bonus por variedad de tipos de caracteres
+                let charTypeCount = 0;
+                if (/[A-Z]/.test(password)) charTypeCount++;
+                if (/[a-z]/.test(password)) charTypeCount++;
+                if (/[0-9]/.test(password)) charTypeCount++;
+                if (/[^A-Za-z0-9]/.test(password)) charTypeCount++;
+                
+                strength += (charTypeCount / 4) * 50;
+                
+                return Math.min(strength, 100);
+            }
+            
+            function updateStrengthMeter(strength) {
+                strengthFill.style.width = strength + '%';
+                
+                if (strength < 30) {
+                    strengthFill.style.backgroundColor = '#f44336';
+                    strengthText.textContent = 'Débil';
+                    strengthText.style.color = '#f44336';
+                } else if (strength < 70) {
+                    strengthFill.style.backgroundColor = '#ff9800';
+                    strengthText.textContent = 'Moderada';
+                    strengthText.style.color = '#ff9800';
+                } else {
+                    strengthFill.style.backgroundColor = '#4caf50';
+                    strengthText.textContent = 'Fuerte';
+                    strengthText.style.color = '#4caf50';
+                }
+            }
+            
+            function showNotification(message, type) {
+                // Cambiar color según el tipo
+                if (type === 'success') {
+                    copyNotification.style.backgroundColor = '#4caf50';
+                } else if (type === 'warning') {
+                    copyNotification.style.backgroundColor = '#ff9800';
+                } else if (type === 'error') {
+                    copyNotification.style.backgroundColor = '#f44336';
+                }
+                
+                // Actualizar mensaje
+                copyNotification.querySelector('span').textContent = message;
+                
+                // Mostrar notificación
+                copyNotification.classList.add('show');
+                
+                // Ocultar después de 3 segundos
+                setTimeout(function() {
+                    copyNotification.classList.remove('show');
+                }, 3000);
+            }
+            
+            function updateThemeIcon(theme) {
+                if (theme === 'dark-mode') {
+                    themeIcon.className = 'fas fa-sun';
+                } else {
+                    themeIcon.className = 'fas fa-moon';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
